@@ -24,7 +24,8 @@ io.on('connection', (socket) => {
   socket.on('user-ready', (id, status) => {
     game.changeReadyStatus(id, status)
     io.emit('current-users', game.users)
-
+    console.log('ready users', game.numOfReadyUsers)
+    
     let start = (num) => {
       if ( num > 0) {
         io.emit('countdown-numbers', num)
