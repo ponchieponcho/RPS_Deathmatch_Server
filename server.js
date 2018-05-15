@@ -25,7 +25,7 @@ io.on('connection', (socket) => {
     game.changeReadyStatus(id, status)
     io.emit('current-users', game.users)
     console.log('ready users', game.numOfReadyUsers)
-    
+
     let start = (num) => {
       if ( num > 0) {
         io.emit('countdown-numbers', num)
@@ -80,6 +80,7 @@ io.on('connection', (socket) => {
       if (game.winners.length === 1) {
         // console.log('***** game over *****')
         io.emit('game-over', game.winners[0].username)
+        game.resetReadyUsers(game.numOfReadyUsers)
       } else {
         for (let i = 0; i < game.winners.length; i++) {
           let playerID = game.winners[i].id

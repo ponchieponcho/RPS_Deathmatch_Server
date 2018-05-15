@@ -9,6 +9,10 @@ class Game {
     this.act = 0
     }
 
+    resetReadyUsers(numOfReadyUsers) {
+        this.numOfReadyUsers = 0;
+    }
+
     fightStopper() {
         if(this.act === 0) {
             this.act++
