@@ -2,11 +2,6 @@ const io = require('socket.io')();
 const Game = require('./Game')
 const port = 5000;
 
-// console.log(`#########################`)
-// console.log(`##########`)
-// console.log(`#########################`)
-
-
 let game = new Game();
 
 io.on('connection', (socket) => {
@@ -129,3 +124,4 @@ io.on('connection', (socket) => {
 
 io.listen(process.env.PORT || port);
 console.log('Listening on port ', port);
+console.log('Listening on port ', process.env.PORT)
