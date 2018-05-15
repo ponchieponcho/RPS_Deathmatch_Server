@@ -120,6 +120,8 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     game.removeUser(socket.id)
+    console.log('***** CURRENT USERS ON SERVER *****')
+    console.log(game.users)
     io.emit('current-users', game.users)
   })
 
