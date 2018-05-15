@@ -1,6 +1,12 @@
-const io = require('socket.io')();
+const express = require('express');
+const socketIO = require('socket.io')();
 const Game = require('./Game')
-const port = 5000;
+const PORT = process.env.PORT || 5000;
+
+const server = express()
+  .listen(PORT, () => console.log(`Listening on ${ PORT }`));
+
+const io = socketIO(server);
 
 let game = new Game();
 
@@ -122,6 +128,6 @@ io.on('connection', (socket) => {
   })
 })
 
-io.listen(process.env.PORT || port);
-console.log('Listening on port ', port);
-console.log('Listening on port ', process.env.PORT)
+// io.listen(process.env.PORT || port);
+// console.log('Listening on port ', port);
+// console.log('Listening on port ', process.env.PORT)
