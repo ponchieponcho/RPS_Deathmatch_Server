@@ -1,5 +1,5 @@
 const express = require('express');
-const socketIO = require('socket.io')();
+const socketIO = require('socket.io');
 const Game = require('./Game')
 const PORT = process.env.PORT || 5000;
 
