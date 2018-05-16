@@ -12,11 +12,11 @@ let game = new Game();
 
 io.on('connection', (socket) => {
 
-  console.log('Socket id: ',socket.id)
+  console.log('Socket id: ', socket.id)
   io.emit('current-users', game.users)
   socket.emit('clientid', socket.id)
-  
-  socket.on('join-game', (user) => { 
+
+  socket.on('join-game', (user) => {
     game.addUser(user)
     io.emit('current-users', game.users)
   })
@@ -27,45 +27,44 @@ io.on('connection', (socket) => {
     console.log('ready users', game.numOfReadyUsers)
 
     let start = (num) => {
-      if ( num > 0) {
+      if (num > 0) {
         io.emit('countdown-numbers', num)
-        } 
-        else if (num === 0) {
+      } else if (num === 0) {
 
-          let sendOpponent = (oneUsername, oneId, twoUsername, twoId) => {
-            
-            console.log(`******Emiting your-opponent to: ${oneId}******`)
-            io.to(`${oneId}`).emit('your-opponent', twoUsername);
-            io.to(`${oneId}`).emit('push-to-choice');
-            io.to(oneId).emit('choice-countdown');
+        let sendOpponent = (oneUsername, oneId, twoUsername, twoId) => {
 
-            console.log(`******Emiting your-opponent to: ${twoId}******`)
-            io.to(`${twoId}`).emit('your-opponent', oneUsername);
-            io.to(`${twoId}`).emit('push-to-choice');
-            io.to(twoId).emit('choice-countdown');
-          }
+          console.log(`******Emiting your-opponent to: ${oneId}******`)
+          io.to(`${oneId}`).emit('your-opponent', twoUsername);
+          io.to(`${oneId}`).emit('push-to-choice');
+          io.to(oneId).emit('choice-countdown');
 
-          let sendWait = (playerID) => {
-            io.to(playerID).emit('waiting');
-          }
-
-          game.handlePairUp(game.users)
-          game.vsStart(game.tournament, sendOpponent, sendWait)
-
+          console.log(`******Emiting your-opponent to: ${twoId}******`)
+          io.to(`${twoId}`).emit('your-opponent', oneUsername);
+          io.to(`${twoId}`).emit('push-to-choice');
+          io.to(twoId).emit('choice-countdown');
         }
-       }
+
+        let sendWait = (playerID) => {
+          io.to(playerID).emit('waiting');
+        }
+
+        game.handlePairUp(game.users)
+        game.vsStart(game.tournament, sendOpponent, sendWait)
+      }
+    }
 
     game.startCountdown(start)
-    })
+  })
 
   socket.on('user-selection', (playerId, selection) => {
     game.changeSelection(playerId, selection)
-})
+  })
 
   socket.on('fight', () => {
-    let checker = game.fightStopper();
+    console.log('socket.on fight')
+    let checker = game.fightStopper(game.act);
 
-    if (checker === false) {    
+    if (checker === false) {
       game.fight()
       console.log('************')
       console.log(`WINNERS:`, game.winners)
@@ -89,34 +88,30 @@ io.on('connection', (socket) => {
           } else {
             io.to(playerID).emit('you-won-round');
           }
-        } 
+        }
 
         let sendOpponent = (oneUsername, oneId, twoUsername, twoId) => {
-              
+
           console.log(`******Emiting your-opponent to: ${oneId}******`)
           io.to(`${oneId}`).emit('your-opponent', twoUsername);
           io.to(`${oneId}`).emit('push-to-choice');
           io.to(oneId).emit('choice-countdown');
-    
+
           console.log(`******Emiting your-opponent to: ${twoId}******`)
           io.to(`${twoId}`).emit('your-opponent', oneUsername);
           io.to(`${twoId}`).emit('push-to-choice');
           io.to(twoId).emit('choice-countdown');
         }
-    
+
         let sendWait = (playerID) => {
           io.to(playerID).emit('waiting');
         }
 
         game.handlePairUp(game.winners)
         game.vsStart(game.tournament, sendOpponent, sendWait)
-        setTimeout(() => {
-          game.fightResetter(game.act);
-        },4000)
+      }
     }
-}
-}
-)
+  })
 
   socket.on('disconnect', () => {
     game.removeUser(socket.id)
@@ -131,7 +126,3 @@ io.on('connection', (socket) => {
     io.emit('reset-to-users')
   })
 })
-
-// io.listen(process.env.PORT || port);
-// console.log('Listening on port ', port);
-// console.log('Listening on port ', process.env.PORT)

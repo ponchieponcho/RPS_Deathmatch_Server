@@ -14,16 +14,17 @@ class Game {
     }
 
     fightStopper() {
+        console.log('fightStopper()', this.act)
         if(this.act === 0) {
             this.act++
             return false
         } else {
+            setTimeout(() => {
+                console.log('timeout')
+                this.act = 0;
+              }, 2000)
             return true
         }
-    }
-
-    fightResetter(act) {
-        this.act = 0;
     }
 
     masterReset() {
