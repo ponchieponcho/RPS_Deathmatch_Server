@@ -108,7 +108,8 @@ class Game {
 
     countDown(start, status) {
         // console.log('status', status)
-        let num = 5;
+        // was let num = 5;
+        let num = 10;
         if (status === true) {
           this.interval = setInterval( () => {
             if (num >= 0) {
