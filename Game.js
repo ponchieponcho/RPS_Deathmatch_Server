@@ -44,12 +44,25 @@ class Game {
 
     removeUser(id) {
         console.log(`Disconnected ${id}`)
+        
         let leavingUser = this.users.filter( user => user.id === id)
-        if (leavingUser.ready === true) {
-            this.numOfReadyUsers = this.numOfReadyUsers - 1;
+
+        if (leavingUser[0]) {
+
+            if (leavingUser[0].ready === true) {
+                this.numOfReadyUsers = this.numOfReadyUsers - 1;
+                let removedUser = this.users.filter( user => user.id !== id)
+                this.users = removedUser;
+            } else if (leavingUser[0].ready === false){
+                let removedUser = this.users.filter( user => user.id !== id)
+                this.users = removedUser;
+            }
+
+        } else {
+            console.log('doing the else')
+            let removedUser = this.users.filter( user => user.id !== id)
+            this.users = removedUser;
         }
-        let removedUser = this.users.filter( user => user.id !== id)
-        this.users = removedUser;
     }
 
     changeReadyStatus(id, status) {

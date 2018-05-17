@@ -9,6 +9,7 @@ const server = express()
 const io = socketIO(server);
 
 let game = new Game();
+game.resetReadyUsers(game.numOfReadyUsers);
 
 io.on('connection', (socket) => {
 
@@ -42,7 +43,7 @@ io.on('connection', (socket) => {
           io.to(`${twoId}`).emit('your-opponent', oneUsername);
           io.to(`${twoId}`).emit('push-to-choice');
           io.to(twoId).emit('choice-countdown');
-        }
+        } 
 
         let sendWait = (playerID) => {
           io.to(playerID).emit('waiting');
@@ -50,6 +51,8 @@ io.on('connection', (socket) => {
 
         game.handlePairUp(game.users)
         game.vsStart(game.tournament, sendOpponent, sendWait)
+      } else if (num === '') {
+          io.emit('countdown-numbers', num)
       }
     }
 
@@ -114,15 +117,18 @@ io.on('connection', (socket) => {
   })
 
   socket.on('disconnect', () => {
-    game.removeUser(socket.id)
-    console.log('***** CURRENT USERS ON SERVER *****')
-    console.log(game.users)
-    io.emit('current-users', game.users)
+    let id = socket.id;
+    game.removeUser(id);
+    console.log('***** CURRENT USERS *****');
+    console.log(game.users);
+    console.log('***** USERS READY *****');
+    console.log(game.numOfReadyUsers);
+    io.emit('current-users', game.users);
   })
 
   socket.on('master-reset', () => {
     game.masterReset();
-    console.log('users on server after reset:', game.users)
-    io.emit('reset-to-users')
+    console.log('users on server after reset:', game.users);
+    io.emit('reset-to-users');
   })
 })
