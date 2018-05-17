@@ -16,10 +16,26 @@ io.on('connection', (socket) => {
   console.log('Socket id: ', socket.id)
   io.emit('current-users', game.users)
   socket.emit('clientid', socket.id)
+  console.log('running-flag: ', game.runningFlag)
+  socket.emit('running-flag', game.runningFlag)
 
   socket.on('join-game', (user) => {
     game.addUser(user)
     io.emit('current-users', game.users)
+  })
+
+  socket.on('game-start', (status) => {
+    console.log('GAME START', status)
+    game.toggleFlag(status)
+    console.log('GAME START - EMITING', game.runningFlag)
+    io.emit('running-flag', game.runningFlag)
+  })
+
+  socket.on('game-end', (status) => {
+    console.log('GAME END',status)
+    game.toggleFlag(status)
+    console.log('GAME END - EMITING', game.runningFlag)
+    io.emit('running-flag', game.runningFlag)
   })
 
   socket.on('user-ready', (id, status) => {

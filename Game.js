@@ -6,7 +6,14 @@ class Game {
     this.losers = [],
     this.interval = null,
     this.numOfReadyUsers = 0,
-    this.act = 0
+    this.act = 0,
+    this.runningFlag = false
+    }
+
+    toggleFlag(status) {
+        console.log('toggleFlag()', status)
+        this.runningFlag = status;
+        console.log('after status change', this.runningFlag)
     }
 
     resetReadyUsers(numOfReadyUsers) {
@@ -33,6 +40,7 @@ class Game {
         this.winners = [];
         this.interval = null;
         this.numOfReadyUsers = 0;
+        this.runningFlag = false;
     }
 
     addUser(user) {
