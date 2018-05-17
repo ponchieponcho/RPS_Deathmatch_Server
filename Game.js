@@ -58,6 +58,7 @@ class Game {
         if (leavingUser[0]) {
 
             if (leavingUser[0].ready === true) {
+
                 this.numOfReadyUsers = this.numOfReadyUsers - 1;
                 let removedUser = this.users.filter( user => user.id !== id)
                 this.users = removedUser;
@@ -80,10 +81,8 @@ class Game {
         this.users = newUsers;
         if(status === true) {
             this.numOfReadyUsers = this.numOfReadyUsers + 1;
-            // console.log('ready users:', this.numOfReadyUsers)
           } else {
             this.numOfReadyUsers = this.numOfReadyUsers - 1;
-            // console.log('ready users:', this.numOfReadyUsers)
           }
     }
 
@@ -108,8 +107,7 @@ class Game {
 
     countDown(start, status) {
         // console.log('status', status)
-        // was let num = 5;
-        let num = 10;
+        let num = 5;
         if (status === true) {
           this.interval = setInterval( () => {
             if (num >= 0) {

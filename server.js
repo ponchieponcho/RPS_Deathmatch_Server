@@ -14,9 +14,11 @@ game.resetReadyUsers(game.numOfReadyUsers);
 io.on('connection', (socket) => {
 
   console.log('Socket id: ', socket.id)
-  io.emit('current-users', game.users)
   socket.emit('clientid', socket.id)
-  console.log('running-flag: ', game.runningFlag)
+
+  io.emit('current-users', game.users)
+
+  console.log('Is a game running?: ', game.runningFlag)
   socket.emit('running-flag', game.runningFlag)
 
   socket.on('join-game', (user) => {
