@@ -18,7 +18,6 @@ io.on('connection', (socket) => {
 
   io.emit('current-users', game.users)
 
-  // console.log('Is a game running?: ', game.runningFlag)
   socket.emit('running-flag', game.runningFlag)
 
   socket.on('join-game', (user) => {
@@ -29,14 +28,12 @@ io.on('connection', (socket) => {
   socket.on('game-start', (status) => {
     console.log('GAME START')
     game.toggleFlag(status)
-    // console.log('GAME START - EMITING', game.runningFlag)
     io.emit('running-flag', game.runningFlag)
   })
 
   socket.on('game-end', (status) => {
     console.log('GAME END')
     game.toggleFlag(status)
-    // console.log('GAME END - EMITING', game.runningFlag)
     io.emit('running-flag', game.runningFlag)
   })
 
@@ -52,15 +49,18 @@ io.on('connection', (socket) => {
 
         let sendOpponent = (oneUsername, oneId, twoUsername, twoId) => {
 
-          console.log(`******Emiting your-opponent to: ${oneId}******`)
+          console.log('')
+          console.log(`****** EMIT opponent to: ${oneId} ******`)
           io.to(`${oneId}`).emit('your-opponent', twoUsername);
           io.to(`${oneId}`).emit('push-to-choice');
           io.to(oneId).emit('choice-countdown');
 
-          console.log(`******Emiting your-opponent to: ${twoId}******`)
+          console.log(`****** EMIT opponent to: ${twoId} ******`)
+          console.log('')
           io.to(`${twoId}`).emit('your-opponent', oneUsername);
           io.to(`${twoId}`).emit('push-to-choice');
           io.to(twoId).emit('choice-countdown');
+          
         } 
 
         let sendWait = (playerID) => {
@@ -86,10 +86,23 @@ io.on('connection', (socket) => {
 
     if (checker === false) {
       game.fight(io)
-      console.log('************')
-      console.log(`WINNERS:`, game.winners)
-      console.log(`LOSERS:`, game.losers)
-      console.log('************')
+
+      console.log('')
+      console.log('*****************************************************')
+      console.log('********************** WINNERS **********************')
+      console.log('*****************************************************')
+      console.log('')
+      console.log(game.winners)
+      console.log('')
+      console.log('*****************************************************')
+      console.log('********************** LOSERS ***********************')
+      console.log('*****************************************************')
+      console.log('')
+      console.log(game.losers)
+      console.log('')
+      console.log('*****************************************************')
+      console.log('*****************************************************')
+      console.log('')
 
       for (let i = 0; i < game.losers.length; i++) {
         let playerID = game.losers[i].id
