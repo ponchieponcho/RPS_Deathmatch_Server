@@ -18,7 +18,7 @@ io.on('connection', (socket) => {
 
   io.emit('current-users', game.users)
 
-  console.log('Is a game running?: ', game.runningFlag)
+  // console.log('Is a game running?: ', game.runningFlag)
   socket.emit('running-flag', game.runningFlag)
 
   socket.on('join-game', (user) => {
@@ -27,23 +27,23 @@ io.on('connection', (socket) => {
   })
 
   socket.on('game-start', (status) => {
-    console.log('GAME START', status)
+    console.log('GAME START')
     game.toggleFlag(status)
-    console.log('GAME START - EMITING', game.runningFlag)
+    // console.log('GAME START - EMITING', game.runningFlag)
     io.emit('running-flag', game.runningFlag)
   })
 
   socket.on('game-end', (status) => {
-    console.log('GAME END',status)
+    console.log('GAME END')
     game.toggleFlag(status)
-    console.log('GAME END - EMITING', game.runningFlag)
+    // console.log('GAME END - EMITING', game.runningFlag)
     io.emit('running-flag', game.runningFlag)
   })
 
   socket.on('user-ready', (id, status) => {
     game.changeReadyStatus(id, status)
     io.emit('current-users', game.users)
-    console.log('ready users', game.numOfReadyUsers)
+    console.log('Number of Users Ready: ', game.numOfReadyUsers)
 
     let start = (num) => {
       if (num > 0) {
@@ -82,11 +82,10 @@ io.on('connection', (socket) => {
   })
 
   socket.on('fight', () => {
-    console.log('socket.on fight')
     let checker = game.fightStopper(game.act);
 
     if (checker === false) {
-      game.fight()
+      game.fight(io)
       console.log('************')
       console.log(`WINNERS:`, game.winners)
       console.log(`LOSERS:`, game.losers)
@@ -98,7 +97,6 @@ io.on('connection', (socket) => {
       }
 
       if (game.winners.length === 1) {
-        // console.log('***** game over *****')
         io.emit('game-over', game.winners[0].username)
         game.resetReadyUsers(game.numOfReadyUsers)
       } else {
@@ -146,7 +144,7 @@ io.on('connection', (socket) => {
 
   socket.on('master-reset', () => {
     game.masterReset();
-    console.log('users on server after reset:', game.users);
+    console.log('Users on server after reset:', game.users);
     io.emit('reset-to-users');
   })
 })

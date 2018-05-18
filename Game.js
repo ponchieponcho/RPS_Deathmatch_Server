@@ -11,9 +11,9 @@ class Game {
     }
 
     toggleFlag(status) {
-        console.log('toggleFlag()', status)
+        // console.log('toggleFlag()', status)
         this.runningFlag = status;
-        console.log('after status change', this.runningFlag)
+        // console.log('after status change', this.runningFlag)
     }
 
     resetReadyUsers(numOfReadyUsers) {
@@ -21,13 +21,13 @@ class Game {
     }
 
     fightStopper() {
-        console.log('fightStopper()', this.act)
+        // console.log('fightStopper()', this.act)
         if(this.act === 0) {
             this.act++
             return false
         } else {
             setTimeout(() => {
-                console.log('timeout')
+                // console.log('timeout')
                 this.act = 0;
               }, 2000)
             return true
@@ -58,19 +58,25 @@ class Game {
         if (leavingUser[0]) {
 
             if (leavingUser[0].ready === true) {
-
-                this.numOfReadyUsers = this.numOfReadyUsers - 1;
-                let removedUser = this.users.filter( user => user.id !== id)
-                this.users = removedUser;
+                console.log('User Found and Ready - Removing from Server')
+                if(this.numOfReadyUsers === 0){
+                    let removedUser = this.users.filter( user => user.id !== id)
+                    this.users = removedUser;
+                } else {
+                    this.numOfReadyUsers = this.numOfReadyUsers - 1;
+                    let removedUser = this.users.filter( user => user.id !== id)
+                    this.users = removedUser;
+            }
             } else if (leavingUser[0].ready === false){
+                console.log('User Found and Not Ready - Removing from Server')
                 let removedUser = this.users.filter( user => user.id !== id)
                 this.users = removedUser;
             }
 
         } else {
-            console.log('doing the else')
-            let removedUser = this.users.filter( user => user.id !== id)
-            this.users = removedUser;
+            console.log('No User Found to Remove')
+            // let removedUser = this.users.filter( user => user.id !== id)
+            // this.users = removedUser;
         }
     }
 
@@ -84,6 +90,16 @@ class Game {
           } else {
             this.numOfReadyUsers = this.numOfReadyUsers - 1;
           }
+    }
+
+    changeStatus(id, status, io) {
+        console.log('changing status', id)
+        let newUsers = this.users.slice();
+        let theuser = newUsers.find((user) => user.id === id)
+        theuser.status = status;
+        this.users = newUsers;
+        io.emit('current-users', this.users)
+        console.log(this.users)
     }
 
     changeSelection(id, selection) {
@@ -127,8 +143,8 @@ class Game {
         let arr = [];
         let i = 0;
         while ((newUsers[0]) && (newUsers[1])) {
-            newUsers[0].status = 'fight';
-            newUsers[1].status = 'fight';
+            // newUsers[0].status = 'fight';
+            // newUsers[1].status = 'fight';
             arr[i] = [newUsers[0], newUsers[1]];
             newUsers.splice(0,1);
             newUsers.splice(0,1);
@@ -166,13 +182,12 @@ class Game {
                     } 
                 else if (tournament[i][0].status === "winner") {
                     console.log('winner', tournament[i][0].id)
-                    // sendWin(tournament[i][0].id)
                     }
             } 
         }
     }
 
-    fight() {
+    fight(io) {
         for (let i = 0; i < this.tournament.length; i++) {
           
             if (this.tournament[i].length === 2) {
@@ -182,26 +197,30 @@ class Game {
                 let playerTwo = this.users.find( (user) => {
                     return user.id === this.tournament[i][1].id;
                 })
-                this.rPS(playerOne, playerTwo)
+                this.rPS(playerOne, playerTwo,io)
             }
         }
     }
 
-    rPS(playerOne, playerTwo) {
+    rPS(playerOne, playerTwo,io) {
 
         if (playerOne.selection === playerTwo.selection ){
             console.log('***** tie *****')
             this.winners.push(playerOne)
             this.winners.push(playerTwo)
+            this.changeStatus(playerOne.id, 'tied', io)
+            io.to(`${playerOne.id}`).emit('change-status', 'tied');
+            this.changeStatus(playerTwo.id, 'tied', io)
+            io.to(`${playerTwo.id}`).emit('change-status', 'tied');
         }
     
         else if (playerOne.selection === "rock" ){
             if(playerTwo.selection === "scissors") {
-                console.log("rock vs scissors")
+                console.log("ROCK vs SCISSORS")
                 this.winners.push(playerOne)
                 this.losers.push(playerTwo)
             } else{
-                console.log("rock vs paper")
+                console.log("ROCK vs paper")
                 this.winners.push(playerTwo)
                 this.losers.push(playerOne)
             }
@@ -209,11 +228,11 @@ class Game {
     
         else if (playerOne.selection === "paper" ){
             if (playerTwo.selection === "rock" ){
-                console.log('paper vs rock')
+                console.log('PAPER vs ROCK')
                 this.winners.push(playerOne)
                 this.losers.push(playerTwo)
             } else{
-                console.log('paper vs scissors')
+                console.log('PAPER vs SCISSORS')
                 this.winners.push(playerTwo)
                 this.losers.push(playerOne)
             }
@@ -221,11 +240,11 @@ class Game {
     
         else if (playerOne.selection === "scissors"){
             if (playerTwo.selection === "paper"){
-                console.log('scissors vs rock')
+                console.log('SCISSORS vs ROCK')
                 this.winners.push(playerOne)
                 this.losers.push(playerTwo)
             } else{
-                console.log('scissors vs paper')
+                console.log('SCISSORS vs PAPER')
                 this.winners.push(playerTwo)
                 this.losers.push(playerOne)
             }
