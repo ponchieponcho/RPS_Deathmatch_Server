@@ -5,7 +5,7 @@
 Link to Front-End: https://github.com/ponchieponcho/RPS_Deathmatch
 <br>
 
-![logo](https://github.com/ponchieponcho/RPS_Deathmatch/blob/master/src/images/LOGO_RPS.png?raw=true)
+<img src="https://github.com/ponchieponcho/RPS_Deathmatch/blob/master/src/images/LOGO_RPS.png?raw=true" width="600">
 
 ---
 
